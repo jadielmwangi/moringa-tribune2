@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.http  import HttpResponse,Http404
-
-# from django.http  import HttpResponse
 import datetime as dt
+from .models import Article
 
 
 # Create your views here.
@@ -11,19 +10,25 @@ def welcome(request):
 
     # return HttpResponse('Welcome to the Moringa Tribune')
 
-def news_of_day(request):
-    date = dt.date.today()
+# def news_of_day(request):
+#     date = dt.date.today()
 
-    # FUNCTION TO CONVERT DATE OBJECT TO FIND EXACT DAY
-    day = convert_dates(date)
-    html = f'''
-        <html>
-            <body>
-                <h1>News for {day} {date.day}-{date.month}-{date.year}</h1>
-            </body>
-        </html>
-            '''
-    return HttpResponse(html)
+#     # FUNCTION TO CONVERT DATE OBJECT TO FIND EXACT DAY
+#     day = convert_dates(date)
+#     html = f'''
+#         <html>
+#             <body>
+#                 <h1>News for {day} {date.day}-{date.month}-{date.year}</h1>
+#             </body>
+#         </html>
+#             '''
+#     return HttpResponse(html)
+
+def news_today(request):
+    date = dt.date.today()
+    news = Article.todays_news()
+    return render(request, 'all-news/today-news.html', {"date": date,"news":news})
+
 
 
 def convert_dates(dates):
@@ -38,23 +43,17 @@ def convert_dates(dates):
     return day
 
 
-def past_days_news(request,past_date):
-
+def past_days_news(request, past_date):
     try:
         # Converts data from the string Url
-        date = dt.datetime.strptime(past_date,'%Y-%m-%d').date()
-
+        date = dt.datetime.strptime(past_date, '%Y-%m-%d').date()
     except ValueError:
         # Raise 404 error when ValueError is thrown
         raise Http404()
-        date = dt.datetime.strptime(past_date,'%Y-%m-%d').date()
+        assert False
 
-    day = convert_dates(date)
-    html = f'''
-        <html>
-            <body>
-                <h1>News for {day} {date.day}-{date.month}-{date.year}</h1>
-            </body>
-        </html>
-            '''
-    return HttpResponse(html)
+    if date == dt.date.today():
+        return redirect(news_today)
+
+    news = Article.days_news(date)
+    return render(request, 'all-news/past-news.html',{"date": date,"news":news})
