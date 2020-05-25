@@ -65,4 +65,7 @@ def article(request,article_id):
         article = Article.objects.get(id = article_id)
     except DoesNotExist:
         raise Http404()
+
+    ## If we find an article, we render the template and pass in the article.
+
     return render(request,"all-news/article.html", {"article":article})        
