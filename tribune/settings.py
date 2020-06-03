@@ -62,7 +62,7 @@ SECRET_KEY = 'b-=ft@02t&-)8f84fd+1wg$5m(f8p=8$wk03b8aqm-=1nr!7t0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['moringa-tribune002.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -78,6 +78,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'news',
     'bootstrap3',
+    'tinymce',
+    'rest_framework',
+    'rest_framework.authtoken'
 
 
 ]
@@ -193,13 +196,12 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-
-
-
-
-
-
-
+##added this
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 ##added this
 django_heroku.settings(locals())
